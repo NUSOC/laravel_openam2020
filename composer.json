@@ -1,0 +1,11 @@
+{
+    "name": "soc/openam2020",
+    "description": "Newer implimentation of the Agentless OpenAM fun. A basic project to get my head around the new design.",
+    "type": "library",
+    "require": {},
+    "autoload": {
+       "files": [
+           "src/OpenAM2020.php"
+       ]
+    }
+}
