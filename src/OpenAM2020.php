@@ -5,37 +5,57 @@ namespace soc;
 class OpenAM2020
 {
 
-    static function test()
-    {
-        return 'Test message.';
-    }
+
+    protected $apigeeApiKey;
+    protected $webSSOApi;
+    protected $cookieName;
+    protected $returnURL;
+    protected $ssoRedirectURL;
 
 
-    static function getConfiguration()
+    public function __construct($apigeeApiKey, $webSSOApi, $cookieName, $returnURL, $ssoRedirectURL)
     {
-        return [
-            'apigeeApiKey' => env('AGENTLESS_SSO_KEY'),
-            'webSSOApi' => env('AGENTLESS_SSO_API'),
-            'cookieName' => env("AGENTLESS_SSO_COOKIE_NAME"),
-            'returnURL'=> env('AGENTLESS_SSO_RETURN_URL'),
-        ];
+        $this->apigeeApiKey = $apigeeApiKey;
+        $this->webSSOApi = $webSSOApi;
+        $this->cookieName = $cookieName;
+        $this->returnURL = $returnURL;
+        $this->ssoRedirectURL = $ssoRedirectURL;
     }
+
+//
+//    static function test()
+//    {
+//        return 'Test message.';
+//    }
+//
+//
+//    static function getConfiguration()
+//    {
+//        return [
+//            'apigeeApiKey' => env('AGENTLESS_SSO_KEY'),
+//            'webSSOApi' => env('AGENTLESS_SSO_API'),
+//            'cookieName' => env("AGENTLESS_SSO_COOKIE_NAME"),
+//            'returnURL'=> env('AGENTLESS_SSO_RETURN_URL'),
+//        ];
+//    }
 
     /**
      * Send the user to the online passport login page.
      */
-    static function redirectToLogin()
+     public function redirectToLogin()
     {
-        $redirect = urlencode(self::getConfiguration()['returnURL'] . '/' . $_SERVER['REQUEST_URI']);
+        $redirect = urlencode($this->returnURL . '/' . $_SERVER['REQUEST_URI']);
 
-        header(env("AGENTLESS_SSO_HEADER_REDIRECT") . $redirect);
+        header($this->ssoRedirectURL . $redirect);
         exit;
     }
 
     /**
      * Get the value of a cookie, if it exists.
+     * @param $name
+     * @return mixed|null
      */
-    static function getCookieValue($name)
+     public function getCookieValue($name)
     {
         $token = null;
         if (array_key_exists($name, $_COOKIE) == true) {
@@ -45,12 +65,12 @@ class OpenAM2020
         return $token;
     }
 
-    static function runAction()
+    public function runAction()
     {
         // Do we have a session?
-        $token = self::getCookieValue('nusso');
+        $token = $this->getCookieValue('nusso');
         if ($token == null) {
-            self::redirectToLogin();
+            $this->redirectToLogin();
         }
 
         /*
@@ -65,7 +85,7 @@ class OpenAM2020
                 'method' => 'POST',
                 'header' => implode("\r\n", [
                     "Content-Length: 0",
-                    "apikey: " . self::getConfiguration()['apigeeApiKey'],
+                    "apikey: " . $this->getConfiguration()['apigeeApiKey'],
                     "webssotoken: $token",
                     "requiresMFA: true",
                     "goto: ", // not using this functionality
@@ -74,9 +94,9 @@ class OpenAM2020
             ],
         ]);
 
-        $result = file_get_contents(self::getConfiguration()['webSSOApi'], false, $context);
+        $result = file_get_contents($this->getConfiguration()['webSSOApi'], false, $context);
         if ($result === false) {
-            self::redirectToLogin();
+            $this->redirectToLogin();
         }
 
         $result = json_decode($result, JSON_OBJECT_AS_ARRAY);
@@ -88,7 +108,7 @@ class OpenAM2020
         }
 
         if (array_key_exists('netid', $result) === false) {
-            self::redirectToLogin();
+            $this->redirectToLogin();
         }
 
         dd($result);
