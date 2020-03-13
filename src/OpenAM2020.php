@@ -22,22 +22,6 @@ class OpenAM2020
         $this->ssoRedirectURL = $ssoRedirectURL;
     }
 
-//
-//    static function test()
-//    {
-//        return 'Test message.';
-//    }
-//
-//
-//    static function getConfiguration()
-//    {
-//        return [
-//            'apigeeApiKey' => env('AGENTLESS_SSO_KEY'),
-//            'webSSOApi' => env('AGENTLESS_SSO_API'),
-//            'cookieName' => env("AGENTLESS_SSO_COOKIE_NAME"),
-//            'returnURL'=> env('AGENTLESS_SSO_RETURN_URL'),
-//        ];
-//    }
 
     /**
      * Send the user to the online passport login page.
