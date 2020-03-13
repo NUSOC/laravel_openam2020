@@ -69,7 +69,7 @@ class OpenAM2020
                 'method' => 'POST',
                 'header' => implode("\r\n", [
                     "Content-Length: 0",
-                    "apikey: " . $this->getConfiguration()['apigeeApiKey'],
+                    "apikey: " . $this->apigeeApiKey,
                     "webssotoken: $token",
                     "requiresMFA: true",
                     "goto: ", // not using this functionality
@@ -78,7 +78,7 @@ class OpenAM2020
             ],
         ]);
 
-        $result = file_get_contents($this->getConfiguration()['webSSOApi'], false, $context);
+        $result = file_get_contents($this->webSSOApi, false, $context);
         if ($result === false) {
             $this->redirectToLogin();
         }
