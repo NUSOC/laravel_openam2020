@@ -1,6 +1,9 @@
 # laravel_openam2020
 
 
+## Note
+This is still a work in progress. 
+
 ## Set Environment Variables, 
 Ensure your base project has the following in the following in the `.env` file. 
 
