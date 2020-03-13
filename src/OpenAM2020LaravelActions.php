@@ -2,8 +2,6 @@
 
 namespace soc;
 
-use soc\OpenAM2020;
-
 class OpenAM2020LaravelActions
 {
 
@@ -17,7 +15,7 @@ class OpenAM2020LaravelActions
         $returnURL = env('AGENTLESS_SSO_RETURN_URL');
         $ssoRedirectURL = env("AGENTLESS_SSO_HEADER_REDIRECT");/**/
 
-        $o = new \soc\OpenAM2020t($apigeeApiKey, $webSSOApi, $cookieName, $returnURL, $ssoRedirectURL);
+        $o = new OpenAM2020($apigeeApiKey, $webSSOApi, $cookieName, $returnURL, $ssoRedirectURL);
 
 
     }
