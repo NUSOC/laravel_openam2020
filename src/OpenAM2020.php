@@ -95,8 +95,8 @@ class OpenAM2020
             $this->redirectToLogin();
         }
 
-        dd($result);
-        //        $netid = $result['netid'];
+        // dd($result);
+        $netid = $result['netid'];
     }
 
 }
