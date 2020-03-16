@@ -107,7 +107,7 @@ class OpenAM2020
         }
 
         // dd($result);
-        $netid = $result['netid'];
+        return $result['netid'];
     }
 
 }
