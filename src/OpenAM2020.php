@@ -106,7 +106,7 @@ class OpenAM2020
             $this->redirectToLogin();
         }
 
-        // dd($result);
+         dump($result);
         return $result['netid'];
     }
 
