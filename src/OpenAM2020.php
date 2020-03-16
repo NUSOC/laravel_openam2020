@@ -11,15 +11,26 @@ class OpenAM2020
     protected $cookieName;
     protected $returnURL;
     protected $ssoRedirectURL;
+    protected $requiresMFA;
 
 
-    public function __construct($apigeeApiKey, $webSSOApi, $cookieName, $returnURL, $ssoRedirectURL)
+    /**
+     * OpenAM2020 constructor.
+     * @param $apigeeApiKey
+     * @param $webSSOApi
+     * @param $cookieName
+     * @param $returnURL
+     * @param $ssoRedirectURL
+     * @param $requiresMFA
+     */
+    public function __construct($apigeeApiKey, $webSSOApi, $cookieName, $returnURL, $ssoRedirectURL, $requiresMFA = true)
     {
         $this->apigeeApiKey = $apigeeApiKey;
         $this->webSSOApi = $webSSOApi;
         $this->cookieName = $cookieName;
         $this->returnURL = $returnURL;
         $this->ssoRedirectURL = $ssoRedirectURL;
+        $this->requiresMFA = $requiresMFA;
     }
 
 
@@ -71,7 +82,7 @@ class OpenAM2020
                     "Content-Length: 0",
                     "apikey: " . $this->apigeeApiKey,
                     "webssotoken: $token",
-                    "requiresMFA: true",
+                    "requiresMFA: " . $this->requiresMFA,
                     "goto: ", // not using this functionality
                 ]),
                 'ignore_errors' => true,

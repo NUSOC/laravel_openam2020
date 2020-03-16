@@ -17,7 +17,7 @@ class OpenAM2020LaravelActions
 
         $o = new OpenAM2020($apigeeApiKey, $webSSOApi, $cookieName, $returnURL, $ssoRedirectURL);
 
-        $netid = $o->runAction();
+        return $o->runAction();
 
 
     }
