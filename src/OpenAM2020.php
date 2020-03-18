@@ -85,7 +85,7 @@ class OpenAM2020
                     "requiresMFA: " . $this->requiresMFA,
                     "goto: ", // not using this functionality
                 ]),
-                'ignore_errors' => true,
+                'ignore_errors' => false,
             ],
         ]);
 
