@@ -37,7 +37,7 @@ class OpenAM2020
     /**
      * Send the user to the online passport login page.
      */
-     public function redirectToLogin()
+    public function redirectToLogin()
     {
         $redirect = urlencode($this->returnURL . '/' . $_SERVER['REQUEST_URI']);
 
@@ -50,7 +50,7 @@ class OpenAM2020
      * @param $name
      * @return mixed|null
      */
-     public function getCookieValue($name)
+    public function getCookieValue($name)
     {
         $token = null;
         if (array_key_exists($name, $_COOKIE) == true) {
@@ -68,26 +68,7 @@ class OpenAM2020
             $this->redirectToLogin();
         }
 
-        /*
-        * Is the session valid?
-        *
-        * You can use any HTTP library you want here.
-        * I'm using stream_context_create since it's a PHP built-in,
-        * but I recommend using Guzzle instead!
-        */
-        $context = stream_context_create([
-            'http' => [
-                'method' => 'POST',
-                'header' => implode("\r\n", [
-                    "Content-Length: 0",
-                    "apikey: " . $this->apigeeApiKey,
-                    "webssotoken: $token",
-                    "requiresMFA: " . $this->requiresMFA,
-                    "goto: ", // not using this functionality
-                ]),
-                'ignore_errors' => false,
-            ],
-        ]);
+        $context = $this->getIsSessionValid($token);
 
         $result = file_get_contents($this->webSSOApi, false, $context);
         if ($result === false) {
@@ -106,8 +87,35 @@ class OpenAM2020
             $this->redirectToLogin();
         }
 
-         dump($result);
+        dump([
+            $result,
+            $context
+        ]);
         return $result['netid'];
+    }
+
+    /**
+     * @param $token
+     * @return resource
+     * Is the session valid?
+     */
+    public function getIsSessionValid($token)
+    {
+
+        $context = stream_context_create([
+            'http' => [
+                'method' => 'POST',
+                'header' => implode("\r\n", [
+                    "Content-Length: 0",
+                    "apikey: " . $this->apigeeApiKey,
+                    "webssotoken: $token",
+                    "requiresMFA: " . $this->requiresMFA,
+                    "goto: ", // not using this functionality
+                ]),
+                'ignore_errors' => false,
+            ],
+        ]);
+        return $context;
     }
 
 }
