@@ -89,7 +89,7 @@ class OpenAM2020
 
         dump([
             $result,
-            $context
+           // $context
         ]);
         return $result['netid'];
     }
