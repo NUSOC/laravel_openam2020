@@ -124,6 +124,7 @@ class OpenAM2020
             ],
         ]);
 
+        // If this fails, we need to explicity return false
         try {
             return file_get_contents($this->webSSOApi, false, $context);
         } catch (\Exception $e) {
@@ -153,7 +154,12 @@ class OpenAM2020
                 'ignore_errors' => false,
             ],
         ]);
-        return file_get_contents($this->DirectoryBasicSearchEndPoint, false, $context);
+
+        try {
+            return file_get_contents($this->DirectoryBasicSearchEndPoint, false, $context);
+        } catch (\Exception $e) {
+            return false;
+        }
     }
 
 
