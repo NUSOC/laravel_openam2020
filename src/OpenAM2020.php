@@ -159,7 +159,9 @@ class OpenAM2020
 
         try {
             $search = $this->DirectoryBasicSearchEndPoint . $netid;
-            return file_get_contents($search, false, $context);
+            $data = json_decode(json_encode(file_get_contents($search, false, $context)));
+
+            return $data;
         } catch (\Exception $e) {
             return false;
         }
