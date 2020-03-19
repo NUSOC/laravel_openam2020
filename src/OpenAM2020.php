@@ -97,7 +97,7 @@ class OpenAM2020
 
         dump([
             $result,
-           // $context
+            // $context
         ]);
         return $result['netid'];
     }
@@ -124,7 +124,11 @@ class OpenAM2020
             ],
         ]);
 
-        return file_get_contents($this->webSSOApi, false, $context);
+        try {
+            return file_get_contents($this->webSSOApi, false, $context);
+        } catch (\Exception $e) {
+            return false;
+        }
     }
 
 
@@ -151,7 +155,6 @@ class OpenAM2020
         ]);
         return file_get_contents($this->DirectoryBasicSearchEndPoint, false, $context);
     }
-
 
 
 }
