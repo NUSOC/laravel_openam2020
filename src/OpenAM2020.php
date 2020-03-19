@@ -91,15 +91,17 @@ class OpenAM2020
             die();
         }
 
+        // if netid doesn't exist, redirect to login page
         if (array_key_exists('netid', $result) === false) {
             $this->redirectToLogin();
         }
 
         dump([
             $result,
-            // $context
+            $this->getEmailAddressFromNetid($result['netid'])
+            //
         ]);
-        return $result['netid'];
+        return $result;
     }
 
     /**
