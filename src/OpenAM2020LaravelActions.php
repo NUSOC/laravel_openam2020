@@ -18,7 +18,7 @@ class OpenAM2020LaravelActions
         $DirectoryBasicSearchEndPoint = env('DIRBASIC_ENDPNT');
         $DirectoryBasicSearchEndPointAPIKEY = env('DIRBASIC_APIKEY');
 
-        $o = new OpenAM2020($apigeeApiKey, $webSSOApi, $cookieName, $returnURL, $ssoRedirectURL, $requiresMFA);
+        $o = new OpenAM2020($apigeeApiKey, $webSSOApi, $cookieName, $returnURL, $ssoRedirectURL, $requiresMFA, $DirectoryBasicSearchEndPoint, $DirectoryBasicSearchEndPointAPIKEY);
 
         return $o->runAction();
 

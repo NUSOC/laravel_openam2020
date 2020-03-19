@@ -2,6 +2,10 @@
 
 namespace soc;
 
+/**
+ * Class OpenAM2020
+ * @package soc
+ */
 class OpenAM2020
 {
 
@@ -15,7 +19,6 @@ class OpenAM2020
     protected $DirectoryBasicSearchEndPoint;
     protected $DirectoryBasicSearchEndPointAPIKEY;
 
-
     /**
      * OpenAM2020 constructor.
      * @param $apigeeApiKey
@@ -23,7 +26,9 @@ class OpenAM2020
      * @param $cookieName
      * @param $returnURL
      * @param $ssoRedirectURL
-     * @param $requiresMFA
+     * @param bool $requiresMFA
+     * @param $DirectoryBasicSearchEndPoint
+     * @param $DirectoryBasicSearchEndPointAPIKEY
      */
     public function __construct($apigeeApiKey, $webSSOApi, $cookieName, $returnURL, $ssoRedirectURL, $requiresMFA = true, $DirectoryBasicSearchEndPoint, $DirectoryBasicSearchEndPointAPIKEY)
     {
