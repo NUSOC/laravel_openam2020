@@ -15,6 +15,9 @@ class OpenAM2020LaravelActions
         $returnURL = env('AGENTLESS_SSO_RETURN_URL');
         $ssoRedirectURL = env("AGENTLESS_SSO_HEADER_REDIRECT");
 
+        $DirectoryBasicSearchEndPoint = env('DIRBASIC_ENDPNT');
+        $DirectoryBasicSearchEndPointAPIKEY = env('DIRBASIC_APIKEY');
+
         $o = new OpenAM2020($apigeeApiKey, $webSSOApi, $cookieName, $returnURL, $ssoRedirectURL, $requiresMFA);
 
         return $o->runAction();

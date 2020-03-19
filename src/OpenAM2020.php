@@ -12,6 +12,8 @@ class OpenAM2020
     protected $returnURL;
     protected $ssoRedirectURL;
     protected $requiresMFA;
+    protected $DirectoryBasicSearchEndPoint;
+    protected $DirectoryBasicSearchEndPointAPIKEY;
 
 
     /**
@@ -23,7 +25,7 @@ class OpenAM2020
      * @param $ssoRedirectURL
      * @param $requiresMFA
      */
-    public function __construct($apigeeApiKey, $webSSOApi, $cookieName, $returnURL, $ssoRedirectURL, $requiresMFA = true)
+    public function __construct($apigeeApiKey, $webSSOApi, $cookieName, $returnURL, $ssoRedirectURL, $requiresMFA = true, $DirectoryBasicSearchEndPoint, $DirectoryBasicSearchEndPointAPIKEY)
     {
         $this->apigeeApiKey = $apigeeApiKey;
         $this->webSSOApi = $webSSOApi;
@@ -31,6 +33,8 @@ class OpenAM2020
         $this->returnURL = $returnURL;
         $this->ssoRedirectURL = $ssoRedirectURL;
         $this->requiresMFA = $requiresMFA;
+        $this->DirectoryBasicSearchEndPoint = $DirectoryBasicSearchEndPoint;
+        $this->DirectoryBasicSearchEndPointAPIKEY = $DirectoryBasicSearchEndPointAPIKEY;
     }
 
 
@@ -68,9 +72,8 @@ class OpenAM2020
             $this->redirectToLogin();
         }
 
-        $context = $this->getIsSessionValid($token);
+        $result = $this->getIsSessionValid($token);
 
-        $result = file_get_contents($this->webSSOApi, false, $context);
         if ($result === false) {
             $this->redirectToLogin();
         }
@@ -115,8 +118,36 @@ class OpenAM2020
                 'ignore_errors' => false,
             ],
         ]);
-        return $context;
+
+        return file_get_contents($this->webSSOApi, false, $context);
     }
+
+
+    /**
+     * @param string $netid
+     * @return resource
+     *
+     * Gets email address via netid. Using same pattern as before
+     * with stream context to keep some consistency.
+     *
+     */
+    public function getEmailAddressFromNetid(string $netid)
+    {
+
+        $context = stream_context_create([
+            'http' => [
+                'method' => 'GET',
+                'header' => implode("\r\n", [
+                    "Content-Length: 0",
+                    "apikey: " . $this->DirectoryBasicSearchEndPointAPIKEY,
+                ]),
+                'ignore_errors' => false,
+            ],
+        ]);
+        return file_get_contents($this->DirectoryBasicSearchEndPoint, false, $context);
+    }
+
+
 
 }
 
