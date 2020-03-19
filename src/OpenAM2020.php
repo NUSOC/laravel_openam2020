@@ -139,8 +139,8 @@ class OpenAM2020
      * @param string $netid
      * @return resource
      *
-     * Gets email address via netid. Using same pattern as before
-     * with stream context to keep some consistency.
+     * Gets information from Basic Dir Search based on netid.
+     * Using same pattern as before with stream context to keep some consistency.
      *
      */
     public function getBasicDirectorySearchDataFromNetid(string $netid)
@@ -167,6 +167,18 @@ class OpenAM2020
         }
     }
 
+
+    /**
+     * @param string $netid
+     * @return mixed
+     *
+     * Using $this->getBasicDirectorySearchDataFromNetid($netid) and filters down
+     * to only the email address
+     */
+    public function getMailByNetID (string $netid) {
+        $data =  $this->getBasicDirectorySearchDataFromNetid($netid);
+        return $data->results[0]->mail;
+    }
 
 }
 
