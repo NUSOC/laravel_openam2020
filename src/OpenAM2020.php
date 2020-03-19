@@ -143,7 +143,7 @@ class OpenAM2020
      * with stream context to keep some consistency.
      *
      */
-    public function getEmailAddressFromNetid(string $netid)
+    public function getBasicDirectorySearchDataFromNetid(string $netid)
     {
 
         $context = stream_context_create([
