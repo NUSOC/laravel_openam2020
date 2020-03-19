@@ -31,6 +31,15 @@ In the composer file, add
 composer require soc/openam2020
 ```
 
+## In a controller
+```
+public function index() {
+    OpenAM2020LaravelActions::login();
+    return true;
+}
+```
+
+
 ## Other
 This is a project based off https://github.com/NIT-Administrative-Systems/Agentless-WebSSO to help me understand how this procedure works. 
 
