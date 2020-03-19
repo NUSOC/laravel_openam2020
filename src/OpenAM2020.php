@@ -99,8 +99,7 @@ class OpenAM2020
         $netid = $result['netid'];
         dump([
             $netid,
-           // $this->getEmailAddressFromNetid($result['netid'])
-            //
+            $this->getEmailAddressFromNetid($netid)
         ]);
         return $result;
     }
@@ -159,7 +158,8 @@ class OpenAM2020
         ]);
 
         try {
-            return file_get_contents($this->DirectoryBasicSearchEndPoint, false, $context);
+            $search = $this->DirectoryBasicSearchEndPoint . $netid;
+            return file_get_contents($search, false, $context);
         } catch (\Exception $e) {
             return false;
         }
