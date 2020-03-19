@@ -96,9 +96,10 @@ class OpenAM2020
             $this->redirectToLogin();
         }
 
+        $netid = $result['netid'];
         dump([
-            $result,
-            $this->getEmailAddressFromNetid($result['netid'])
+            $netid,
+           // $this->getEmailAddressFromNetid($result['netid'])
             //
         ]);
         return $result;
