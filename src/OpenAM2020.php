@@ -99,7 +99,7 @@ class OpenAM2020
         $netid = $result['netid'];
         dump([
             $netid,
-            $this->getEmailAddressFromNetid($netid)
+            $this->getMailByNetID($netid)
         ]);
         return $result;
     }
