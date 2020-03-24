@@ -97,10 +97,13 @@ class OpenAM2020
         }
 
         $netid = $result['netid'];
-        dump([
+        echo '<pre>';
+
+        print_r([
             $netid,
             $this->getMailByNetID($netid)
         ]);
+        echo '</pre>';
         return $result;
     }
 
