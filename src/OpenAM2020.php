@@ -97,7 +97,7 @@ class OpenAM2020
 
         return [
             'netid' => $result['netid'],
-            'email' => $this->getMailByNetID($netid)
+            'email' => $this->getMailByNetID($result['netid'])
         ];
     }
 
