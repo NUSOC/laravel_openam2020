@@ -95,17 +95,9 @@ class OpenAM2020
             $this->redirectToLogin();
         }
 
-        $netid = $result['netid'];
-        echo '<pre>';
-
-//        print_r([
-//            $netid,
-//            $this->getMailByNetID($netid)
-//        ]);
-//        echo '</pre>';
         return [
-            'netid' => $netid,
-            'email' => getMailByNetID($netid)
+            'netid' => $result['netid'],
+            'email' => $this->getMailByNetID($netid)
         ];
     }
 
