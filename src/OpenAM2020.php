@@ -49,8 +49,7 @@ class OpenAM2020
     public function redirectToLogin()
     {
         $redirect = urlencode($this->returnURL . '/' . $_SERVER['REQUEST_URI']);
-
-        header($this->ssoRedirectURL . $redirect);
+        @header($this->ssoRedirectURL . $redirect);
         exit;
     }
 
@@ -99,12 +98,15 @@ class OpenAM2020
         $netid = $result['netid'];
         echo '<pre>';
 
-        print_r([
-            $netid,
-            $this->getMailByNetID($netid)
-        ]);
-        echo '</pre>';
-        return $result;
+//        print_r([
+//            $netid,
+//            $this->getMailByNetID($netid)
+//        ]);
+//        echo '</pre>';
+        return [
+            'netid' => $netid,
+            'email' => getMailByNetID($netid)
+        ];
     }
 
     /**
@@ -178,8 +180,9 @@ class OpenAM2020
      * Using $this->getBasicDirectorySearchDataFromNetid($netid) and filters down
      * to only the email address
      */
-    public function getMailByNetID (string $netid) {
-        $data =  $this->getBasicDirectorySearchDataFromNetid($netid);
+    public function getMailByNetID(string $netid)
+    {
+        $data = $this->getBasicDirectorySearchDataFromNetid($netid);
         return $data->results[0]->mail;
     }
 
