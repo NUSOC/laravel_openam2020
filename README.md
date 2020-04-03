@@ -40,6 +40,20 @@ public function index() {
 ```
 
 
+## To set up development environment
+Start with a new laravel project, add the following to your composer file. Change folder location to match where this plugin folder is located. 
+
+```
+    "repositories": {
+        "local": {
+            "type":"path",
+            "url": "$HOME/folder/openam_2020_module"
+        }
+    }
+```
+
+and of 
+
 ## Other
 This is a project based off https://github.com/NIT-Administrative-Systems/Agentless-WebSSO to help me understand how this procedure works. 
 
