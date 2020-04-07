@@ -31,12 +31,15 @@ In the composer file, add
 composer require soc/openam2020
 ```
 
-## In a controller
+## In middleware
 ```
-public function index() {
-    OpenAM2020LaravelActions::login();
-    return true;
-}
+// returns [
+//   'netid'=>"abc123",
+//   'email'=>"account@domain.ext"
+// ]
+$o2020 = OpenAM2020LaravelActions::login();
+auth()->login(User::where('netid', $o2020['netid'])->first());
+
 ```
 
 
