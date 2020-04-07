@@ -10,10 +10,12 @@ Ensure your base project has the following in the following in the `.env` file.
 ```
 AGENTLESS_SSO_KEY="o....0"
 AGENTLESS_SSO_API="https://server-test.apigee.net/agentless-websso/validateWebSSOToken"
-AGENTLESS_SSO_COOKIE_NAME="op....en"
-AGENTLESS_SSO_RETURN_URL="htt....00"
 AGENTLESS_SSO_HEADER_REDIRECT="Location: https://...du/nusso/XUI/?....d-duo&goto="
+DIRBASIC_ENDPNT=https://server-prod.apigee.net/directory-search/res/netid/bas/
+DIRBASIC_APIKEY=nlM....
 ```
+Note: Use production for basic directory search. It will be more up to date. Development 
+directory searches may not provide a valid email address to match the netid. 
 
 ## Set up Repo
 In the composer file, add
