@@ -23,24 +23,15 @@ class OpenAM2020
      * OpenAM2020 constructor.
      * @param $apigeeApiKey
      * @param $webSSOApi
-     * @param $returnURL
      * @param $ssoRedirectURL
      * @param $DirectoryBasicSearchEndPoint
      * @param $DirectoryBasicSearchEndPointAPIKEY
      */
-    public function __construct($apigeeApiKey,
-                                $webSSOApi,
-                                $returnURL,
-                                $ssoRedirectURL,
-                                $DirectoryBasicSearchEndPoint,
-                                $DirectoryBasicSearchEndPointAPIKEY)
+    public function __construct($apigeeApiKey, $webSSOApi, $ssoRedirectURL, $DirectoryBasicSearchEndPoint, $DirectoryBasicSearchEndPointAPIKEY)
     {
         $this->apigeeApiKey = $apigeeApiKey;
         $this->webSSOApi = $webSSOApi;
-       // $this->cookieName = $cookieName;
-        $this->returnURL = $returnURL;
         $this->ssoRedirectURL = $ssoRedirectURL;
-        // $this->requiresMFA = $requiresMFA;
         $this->DirectoryBasicSearchEndPoint = $DirectoryBasicSearchEndPoint;
         $this->DirectoryBasicSearchEndPointAPIKEY = $DirectoryBasicSearchEndPointAPIKEY;
     }
@@ -51,7 +42,7 @@ class OpenAM2020
      */
     public function redirectToLogin()
     {
-        $redirect = urlencode($this->returnURL . $_SERVER['REQUEST_URI']);
+        $redirect = urlencode('https://' . $_SERVER['SERVER_NAME'] .  $_SERVER['REQUEST_URI']);
         @header($this->ssoRedirectURL . $redirect);
         exit;
     }
