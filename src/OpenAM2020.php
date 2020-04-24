@@ -5,6 +5,10 @@ namespace soc;
 /**
  * Class OpenAM2020
  * @package soc
+ *
+ * This file was copied from the WP plugin designed to do the same thing. There may be some WP references in the
+ * comments but just coping the file was easier than trying to manaage submodules.
+ *
  */
 class OpenAM2020
 {
@@ -12,10 +16,8 @@ class OpenAM2020
 
     protected $apigeeApiKey;
     protected $webSSOApi;
-    protected $cookieName;
     protected $returnURL;
     protected $ssoRedirectURL;
-    protected $requiresMFA;
     protected $DirectoryBasicSearchEndPoint;
     protected $DirectoryBasicSearchEndPointAPIKEY;
 
@@ -31,9 +33,17 @@ class OpenAM2020
     {
         $this->apigeeApiKey = $apigeeApiKey;
         $this->webSSOApi = $webSSOApi;
+        //$this->returnURL = $returnURL;
         $this->ssoRedirectURL = $ssoRedirectURL;
         $this->DirectoryBasicSearchEndPoint = $DirectoryBasicSearchEndPoint;
         $this->DirectoryBasicSearchEndPointAPIKEY = $DirectoryBasicSearchEndPointAPIKEY;
+
+        // Determine $this->requiresMFA flag
+        $this->requiresMFA = (stristr($this->ssoRedirectURL, 'ldap-and-duo') !== false) ? TRUE : FALSE;
+
+        // calculate return URL
+       $this->returnURL = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] .  $_SERVER['REQUEST_URI'];
+
     }
 
 
@@ -42,7 +52,7 @@ class OpenAM2020
      */
     public function redirectToLogin()
     {
-        $redirect = urlencode('https://' . $_SERVER['SERVER_NAME'] .  $_SERVER['REQUEST_URI']);
+        $redirect = urlencode($this->returnURL);
         @header($this->ssoRedirectURL . $redirect);
         exit;
     }
@@ -89,6 +99,9 @@ class OpenAM2020
             $this->redirectToLogin();
         }
 
+        // Does this need to be MFAed?
+       // $this->ensureMFAedConnection($token);
+
         return [
             'netid' => $result['netid'],
             'email' => $this->getMailByNetID($result['netid'])
@@ -117,7 +130,7 @@ class OpenAM2020
             ],
         ]);
 
-        // If this fails, we need to explicity return false
+        // If this fails, we need to explicitly return false
         try {
             return file_get_contents($this->webSSOApi, false, $context);
         } catch (\Exception $e) {
@@ -170,6 +183,66 @@ class OpenAM2020
     {
         $data = $this->getBasicDirectorySearchDataFromNetid($netid);
         return $data->results[0]->mail;
+    }
+
+
+    /**
+     * A self contained function that was added post-hoc to ensure that
+     * if MFA is set. That is, this attempts to minimize the any user
+     * changes to authIndexValue in an attempt to bypass MFA. If the site
+     * requires MFA and session-info says that DUO was not invoked, it will
+     * clear any WP auth cookies and redirect back to the SSO.
+     *
+     * @param string $token
+     * @return bool|void
+     */
+    protected function ensureMFAedConnection(string $token)
+    {
+        // If this site doesn't require DUO/MFA, this function
+        // does nothing else.
+        if (!$this->requiresMFA) {
+            return;
+        }
+
+        // Set up context.
+        $context = stream_context_create([
+            'http' => [
+                'method' => 'POST',
+                'header' => implode("\r\n", [
+                    "Content-Length: 0",
+                    "apikey: " . $this->apigeeApiKey,
+                    "webssotoken: $token",
+                    "requiresMFA: " . $this->requiresMFA,
+                    "goto: ", // not using this functionality
+                ]),
+                'ignore_errors' => false,
+            ],
+        ]);
+
+
+        // switch out endpoint to session-info
+        $session_info_endpoint = str_replace('validateWebSSOToken', 'session-info', $this->webSSOApi);
+
+        // Make call to get information
+        try {
+            $session_info_data = json_decode(file_get_contents($session_info_endpoint, false, $context));
+        } catch (\Exception $e) {
+            error_log($e->getMessage());
+            (new OpenAM2020CustomError())->DisplayCustomOpenAM2020ErrorAndDie('Error reaching Apigee', $e->getMessage());
+            return false;
+        }
+
+        // Distill data
+        $isMFAed = $session_info_data->properties->isDuoAuthenticated;
+
+        // If isMFAed is FALSE, something was wrong and DUO was bypassed. Clear authcookie
+        // and send back for a DUO auth.
+        if (!$isMFAed) {
+            auth()->logout();
+            $this->redirectToLogin();
+            die();
+        }
+
     }
 
 }
