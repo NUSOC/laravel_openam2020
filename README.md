@@ -14,8 +14,11 @@ AGENTLESS_SSO_HEADER_REDIRECT="Location: https://...du/nusso/XUI/?....d-duo&goto
 DIRBASIC_ENDPNT=https://server-prod.apigee.net/directory-search/res/netid/bas/
 DIRBASIC_APIKEY=nlM....
 ```
-Note: Use production for basic directory search. It will be more up to date. Development 
+Notes: 
+- Use production for basic directory search. It will be more up to date. Development 
 directory searches may not provide a valid email address to match the netid. 
+- The value of `authIndexValue` determines if MFA will be used. 
+- A value of `authIndexValue=ldap-and-duo` will also trigger the method `ensureMFAedConnection(string $token)` to fire. This hits the end session-info endpoint to ask for the boolean value of ` $session_info_data->properties->isDuoAuthenticated`. This prevents someone from changing the value in browser's location bar from `ldap-and-duo` to `ldap-registry` (by passing MFA).
 
 ## Set up Repo
 In the composer file, add
