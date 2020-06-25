@@ -196,7 +196,7 @@ class OpenAM2020
      * @param string $token
      * @return bool|void
      */
-    protected function ensureMFAedConnection(string $token)
+    public function ensureMFAedConnection(string $token)
     {
         // If this site doesn't require DUO/MFA, this function
         // does nothing else.
