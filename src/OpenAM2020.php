@@ -228,7 +228,7 @@ class OpenAM2020
             $session_info_data = json_decode(file_get_contents($session_info_endpoint, false, $context));
         } catch (\Exception $e) {
             error_log($e->getMessage());
-            (new OpenAM2020CustomError())->DisplayCustomOpenAM2020ErrorAndDie('Error reaching Apigee', $e->getMessage());
+            die('Error reaching Apigee: ' . $e->getMessage());
             return false;
         }
 
