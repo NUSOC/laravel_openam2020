@@ -37,13 +37,61 @@ composer require soc/openam2020
 ```
 
 ## In middleware
+
+First set up middleware:
 ```
-// returns [
-//   'netid'=>"abc123",
-//   'email'=>"account@domain.ext"
-// ]
-$o2020 = OpenAM2020LaravelActions::login();
-auth()->login(User::where('netid', $o2020['netid'])->first());
+$ php artisan make:middleware SSOMiddleWare
+```
+
+Ensure it's connected in Kernal.php 
+```
+  protected $middleware = [
+        \App\Http\Middleware\TrustProxies::class,
+        ...
+        \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
+        OPENAM::class
+    ];
+```
+
+
+```
+ /**
+     * This is the piece of middleware that connects Laravel to the
+     * OpenAM/SSO module. 
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param \Closure $next
+     * @return mixed
+     */
+    public function handle(Request $request, Closure $next)
+    {
+
+        // assume https
+        if (!isset($_SERVER['REQUEST_SCHEME'])) {
+            $_SERVER['REQUEST_SCHEME'] = 'https';
+        }
+
+        // get netid and email from SSO
+        $o2020 = OpenAM2020LaravelActions::login();
+
+        // add user in database
+        User::updateOrCreate(
+            [
+                'name' => $o2020['netid'],
+                'email' => $o2020['email']
+            ],
+            [
+                'name' => $o2020['netid'],
+                'email' => $o2020['email'],
+                'password'=>Str::random(32)     // not ever used
+            ]
+        );
+
+        // Authenticate into laravel
+        auth()->login(User::where('name', $o2020['netid'])->first());
+
+        return $next($request);
+    }
 
 ```
 
