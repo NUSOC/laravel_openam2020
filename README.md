@@ -49,7 +49,7 @@ Ensure it's connected in Kernal.php
         \App\Http\Middleware\TrustProxies::class,
         ...
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
-        OPENAM::class
+        SSOMiddleWare::class
     ];
 ```
 
